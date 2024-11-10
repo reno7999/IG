@@ -3,7 +3,7 @@ name: IG Automation
 on:
   push:
     branches:
-      - main
+      - mai
   schedule:
     - cron: "0 */24 * * *"
 
@@ -16,7 +16,7 @@ jobs:
     needs: get_cookie_files
     steps:
       - name: Checar repositório
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Instalar Node.js
         uses: actions/setup-node@v2
@@ -36,6 +36,12 @@ jobs:
         run: |
           echo "Processando conta: ${file##*/}"
           node gnr.js "${{ matrix.cookie_file }}"
+
+      - name: Salvar vídeos como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: videos
+          path: videos/  # Pasta onde os vídeos serão salvos
 
   get_cookie_files:
     runs-on: ubuntu-latest
