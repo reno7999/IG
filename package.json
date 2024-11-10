@@ -1,30 +1,18 @@
 {
-  "dependencies": {
-    "@octokit/core": "^6.1.2",
-    "axios": "^1.7.7",
-    "body-parser": "^1.20.3",
-    "cheerio": "^1.0.0",
-    "crypto": "^1.0.1",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.1",
-    "express-session": "^1.0.0",
-    "http2-wrapper": "^2.2.1",
-    "passport": "^0.7.0",
-    "passport-auth0": "^1.4.4",
-    "playwright": "file:",
-    "postman-collection": "^4.5.0",
-    "rimraf": "^6.0.1",
-    "tiktok-signature": "^1.9.2",
-    "xbogus": "^1.0.2"
-  },
-  "name": "playwright",
+  "name": "ig-automation",
   "version": "1.0.0",
-  "main": "likerq.js",
+  "description": "Automação para Instagram usando Playwright e Axios",
+  "main": "ig.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node gnr.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "dependencies": {
+    "axios": "^0.27.2",
+    "playwright": "^1.29.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "license": "ISC"
 }
