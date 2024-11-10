@@ -115,7 +115,8 @@ async function testarLogin(TOKEN, SHA1, cookieFile) {
                         const page = await context.newPage();
                         await page.goto(profileUrl);
                         console.log(`Abrindo navegador para seguir o perfil: ${profileUrl}`);
-                        await new Promise(resolve => setTimeout(resolve, 3 * 12000));
+                        console.log(`Aguardando 3 horas...`);
+                        await new Promise(resolve => setTimeout(resolve, 3 * 3600000));
                         await page.keyboard.press('Tab');
                         await page.keyboard.press('Tab');
                         await page.keyboard.press('Tab');
