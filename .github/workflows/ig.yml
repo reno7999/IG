@@ -1,0 +1,51 @@
+name: IG Automation
+
+on:
+  push:
+    branches:
+      - mai
+  schedule:
+    - cron: "0 */24 * * *"
+
+jobs:
+  executar-contas:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        cookie_file: ${{ fromJson(needs.get_cookie_files.outputs.cookie_files) }}
+    needs: get_cookie_files
+    steps:
+      - name: Checar repositório
+        uses: actions/checkout@v2
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Instalar Playwright
+        run: npm install playwright
+
+      - name: Instalar Browsers do Playwright
+        run: npx playwright install        
+
+      - name: Processar conta
+        run: |
+          echo "Processando conta: ${file##*/}"
+          node gnr.js "${{ matrix.cookie_file }}"
+
+  get_cookie_files:
+    runs-on: ubuntu-latest
+    outputs:
+      cookie_files: ${{ steps.get_cookie_files.outputs.cookie_files }}
+    steps:
+      - name: Checar repositório
+        uses: actions/checkout@v2
+
+      - name: Obter arquivos de cookie
+        id: get_cookie_files
+        run: |
+          echo "::set-output name=cookie_files::$(ls ./cookies/*.json | jq -R -s -c 'split("\n") | map(select(. != ""))')"
