@@ -3,7 +3,7 @@ name: IG Automation
 on:
   push:
     branches:
-      - mai
+      - main
   schedule:
     - cron: "0 */24 * * *"
 
