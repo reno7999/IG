@@ -8,7 +8,7 @@ const BASE_URL_CONFIRM_ACTION = "http://api.ganharnoinsta.com/confirm_action.php
 const TOKEN = '98664a53-aad2-4189-ad45-82fbda6624e7';
 const SHA1 = 'e5990261605cd152f26c7919192d4cd6f6e22227';
 
-const cookieFile = process.argv[2]; // O nome do arquivo de cookie deve ser passado como argumento
+const cookieFile = process.argv[2];
 if (!cookieFile) {
     console.error('Por favor, forneça o nome do arquivo de cookie como argumento.');
     process.exit(1);
@@ -16,7 +16,6 @@ if (!cookieFile) {
 
 async function loadCookies(context, filePath) {
     try {
-        // Corrige o caminho para evitar duplicações do diretório
         const resolvedPath = path.resolve('./cookies', path.basename(filePath));
         const cookies = JSON.parse(fs.readFileSync(resolvedPath, 'utf8'));
         await context.addCookies(cookies);
@@ -34,7 +33,9 @@ async function testarLogin(TOKEN, SHA1, cookieFile) {
 
     try {
         const browser = await chromium.launch();
-        const context = await browser.newContext();
+        const context = await browser.newContext({
+            recordVideo: { dir: 'videos/' }  // Configura a gravação de vídeo
+        });
 
         await loadCookies(context, cookieFile);
 
@@ -53,7 +54,7 @@ async function testarLogin(TOKEN, SHA1, cookieFile) {
             token: TOKEN,
             sha1: SHA1,
             SESSIONID: loginData.SESSIONID,
-            nome_usuario: path.basename(cookieFile, '.json'), // Nome do perfil a partir do nome do arquivo
+            nome_usuario: path.basename(cookieFile, '.json'),
             is_tiktok: "0",
             is_instagram: "1"
         };
@@ -83,7 +84,7 @@ async function testarLogin(TOKEN, SHA1, cookieFile) {
                     token: TOKEN,
                     sha1: SHA1,
                     id_conta: ID_CONTA,
-                    tipo_acao: "3" // 3 pode ser o tipo para seguir
+                    tipo_acao: "3"
                 };
 
                 const getActionResponse = await axios.post(BASE_URL_GET_ACTION, getActionDados, {
@@ -98,7 +99,6 @@ async function testarLogin(TOKEN, SHA1, cookieFile) {
                         const profileUrl = actionData.url;
                         console.log(`Ação de seguir encontrada. ID_PEDIDO: ${ID_PEDIDO} para ${cookieFile}`);
 
-                        // Confirmar a ação na API imediatamente após encontrá-la
                         const confirmActionDados = {
                             token: TOKEN,
                             sha1: SHA1,
@@ -112,10 +112,11 @@ async function testarLogin(TOKEN, SHA1, cookieFile) {
 
                         console.log(`Confirmação da ação de seguir para ${cookieFile}:`, confirmActionResponse.data);
 
-                        console.log(`Abrindo navegador para seguir o perfil: ${profileUrl}`);
                         const page = await context.newPage();
-                        console.log(`Aguaradando 3 horas...`);
-                        await new Promise(resolve => setTimeout(resolve, 3 * 12000));
+                        await page.goto(profileUrl);
+                        console.log(`Abrindo navegador para seguir o perfil: ${profileUrl}`);
+
+                        await page.waitForTimeout(3000);
                         await page.keyboard.press('Tab');
                         await page.keyboard.press('Tab');
                         await page.keyboard.press('Tab');
