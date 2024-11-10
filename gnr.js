@@ -24,19 +24,6 @@ async function loadCookies(context, filePath) {
     }
 }
 
-async function openAndFollowProfile(context, profileUrl, cookieFile) {
-    const page = await context.newPage();
-    console.log(`Abrindo navegador para seguir o perfil: ${profileUrl}`);
-    await page.goto(profileUrl);
-    await new Promise(resolve => setTimeout(resolve, 3 * 12000));
-    await page.keyboard.press('Tab');
-    await page.keyboard.press('Tab');
-    await page.keyboard.press('Tab');
-    await page.keyboard.press('Enter');
-    console.log(`Ação de seguir realizada para ${cookieFile} no perfil ${profileUrl}`);
-    await page.close();
-}
-
 async function testarLogin(TOKEN, SHA1, cookieFile) {
     console.log(`Iniciando login para ${cookieFile}`);
     const loginUrl = 'http://api.ganharnoinsta.com/login.php';
@@ -44,10 +31,12 @@ async function testarLogin(TOKEN, SHA1, cookieFile) {
 
     const loginDados = { token: TOKEN, sha1: SHA1 };
 
-    const browser = await chromium.launch();
-    const context = await browser.newContext();
-
     try {
+        const browser = await chromium.launch();
+        const context = await browser.newContext({
+            recordVideo: { dir: 'videos/' }  // Configura a gravação de vídeo
+        });
+
         await loadCookies(context, cookieFile);
 
         const loginResponse = await axios.post(loginUrl, loginDados, {
@@ -104,29 +93,42 @@ async function testarLogin(TOKEN, SHA1, cookieFile) {
 
                 const actionData = getActionResponse.data;
 
-                if (actionData.status === 'ENCONTRADA' && actionData.tipo_acao === 'seguir' && actionData.id_pedido) {
-                    const ID_PEDIDO = actionData.id_pedido;
-                    const profileUrl = actionData.url;
-                    console.log(`Ação de seguir encontrada. ID_PEDIDO: ${ID_PEDIDO} para ${cookieFile}`);
+                if (actionData.status === 'ENCONTRADA') {
+                    if (actionData.tipo_acao === 'seguir' && actionData.id_pedido) {
+                        const ID_PEDIDO = actionData.id_pedido;
+                        const profileUrl = actionData.url;
+                        console.log(`Ação de seguir encontrada. ID_PEDIDO: ${ID_PEDIDO} para ${cookieFile}`);
 
-                    const confirmActionDados = {
-                        token: TOKEN,
-                        sha1: SHA1,
-                        id_pedido: ID_PEDIDO,
-                        id_conta: ID_CONTA
-                    };
+                        const confirmActionDados = {
+                            token: TOKEN,
+                            sha1: SHA1,
+                            id_pedido: ID_PEDIDO,
+                            id_conta: ID_CONTA
+                        };
 
-                    const confirmActionResponse = await axios.post(BASE_URL_CONFIRM_ACTION, confirmActionDados, {
-                        headers: { 'Content-Type': 'application/json' }
-                    });
+                        const confirmActionResponse = await axios.post(BASE_URL_CONFIRM_ACTION, confirmActionDados, {
+                            headers: { 'Content-Type': 'application/json' }
+                        });
 
-                    console.log(`Confirmação da ação de seguir para ${cookieFile}:`, confirmActionResponse.data);
+                        console.log(`Confirmação da ação de seguir para ${cookieFile}:`, confirmActionResponse.data);
 
-                    await openAndFollowProfile(context, profileUrl, cookieFile);
+                        const page = await context.newPage();
+                        await page.goto(profileUrl);
+                        console.log(`Abrindo navegador para seguir o perfil: ${profileUrl}`);
 
-                    actionFound = true;
-                } else {
-                    console.log(`Ação de curtir encontrada e ignorada. Detalhes: ${actionData}`);
+                        await page.waitForTimeout(3000);
+                        await page.keyboard.press('Tab');
+                        await page.keyboard.press('Tab');
+                        await page.keyboard.press('Tab');
+                        await page.keyboard.press('Enter');
+
+                        console.log(`Ação de seguir realizada para ${cookieFile} no perfil ${profileUrl}`);
+
+                        await page.close();
+                        actionFound = true;
+                    } else {
+                        console.log(`Ação de curtir encontrada e ignorada. Detalhes: ${actionData}`);
+                    }
                 }
 
                 delay += 0;
@@ -136,13 +138,13 @@ async function testarLogin(TOKEN, SHA1, cookieFile) {
             if (!actionFound) {
                 console.error(`Não foi possível encontrar uma ação de seguir válida para ${cookieFile} após ${attempts} tentativas.`);
             }
+
+            await browser.close();
         } else {
             throw new Error(`Erro: ID_CONTA não encontrado para ${cookieFile}.`);
         }
     } catch (error) {
         console.error(`Erro na requisição para ${cookieFile}:`, error.response ? error.response.data : error.message);
-    } finally {
-        await browser.close();
     }
 }
 
