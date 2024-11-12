@@ -3,10 +3,8 @@ name: IG Automation
 on:
   push:
     branches:
-      - main
-  schedule:
-    - cron: "0 */24 * * *"
-
+      - mai
+      
 jobs:
   executar-contas:
     runs-on: ubuntu-latest
