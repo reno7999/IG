@@ -1,0 +1,92 @@
+[
+    {
+        "name": "datr",
+        "value": "rqwvZzeOjYmXpnEVZtfL_cKY",
+        "domain": ".instagram.com",
+        "path": "/",
+        "expires": 1765737539.011137,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "None"
+    },
+    {
+        "name": "ig_did",
+        "value": "E38FD9EB-59AD-4ABB-824C-F2BFEDC2827B",
+        "domain": ".instagram.com",
+        "path": "/",
+        "expires": 1762713624.187197,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "Lax"
+    },
+    {
+        "name": "wd",
+        "value": "1366x651",
+        "domain": ".instagram.com",
+        "path": "/",
+        "expires": 1731782447,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "Lax"
+    },
+    {
+        "name": "mid",
+        "value": "Zy-srgALAAFFkulL5UvF2yJmh4nT",
+        "domain": ".instagram.com",
+        "path": "/",
+        "expires": 1765737563,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "Lax"
+    },
+    {
+        "name": "ig_nrcb",
+        "value": "1",
+        "domain": ".instagram.com",
+        "path": "/",
+        "expires": 1762713588.133853,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "Lax"
+    },
+    {
+        "name": "csrftoken",
+        "value": "GvrlTSaazgdlm147itsqsW1iOdlGLj6R",
+        "domain": ".instagram.com",
+        "path": "/",
+        "expires": 1762627260.935729,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "Lax"
+    },
+    {
+        "name": "ds_user_id",
+        "value": "70223117316",
+        "domain": ".instagram.com",
+        "path": "/",
+        "expires": 1738953660.93664,
+        "httpOnly": false,
+        "secure": true,
+        "sameSite": "Lax"
+    },
+    {
+        "name": "sessionid",
+        "value": "70223117316%3Aw0SGv9mDyZMLNV%3A20%3AAYfL_kojL5CSBgV0Q5gWt7nn5UkrkHxooYWDgU_mjQ",
+        "domain": ".instagram.com",
+        "path": "/",
+        "expires": 1762713624.187484,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "Lax"
+    },
+    {
+        "name": "rur",
+        "value": "\"CCO\\05470223117316\\0541762713768:01f75965cc5ae9b78d1700143f33da51eaaaddbf24a4b41c47791051ddced66ab295f0e4\"",
+        "domain": ".instagram.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "Lax"
+    }
+]
